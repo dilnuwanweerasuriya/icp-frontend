@@ -1,15 +1,17 @@
 import './App.css'
-import ProductCard from './components/ProductCard';
 
 function App() {
 
-  return (
-    <>
-      <ProductCard name="iPhone 17" price="535,000" image="https://www.att.com/scmsassets/global/devices/phones/apple/apple-iphone-17-pro-max/defaultimage/cosmic-orange-hero-zoom.png" />
-      <ProductCard name="iPad" price="235,000" image="https://s3.ap-southeast-1.amazonaws.com/dlg.dialog.lk/s3fs-public/styles/product_large/public/2023-08/ipad-air-4-gen.jpg" />
-      <ProductCard name="iWatch" price="120,000" image="https://i0.wp.com/chinthanagsm.lk/wp-content/uploads/2022/08/i-watch-series-7.jpg?fit=1000%2C1000&ssl=1" />
-    </>
-  )
+    return (
+        <div className='w-[600px] h-[600px] border bg-gray-400 relative'>
+            <div className='w-[500px] h-[500px] bg-yellow-100 flex flex-col items-center justify-center'>
+                <div className='w-[100px] h-[100px] bg-blue-400'></div>
+                <div className='w-[100px] h-[100px] bg-red-400 fixed left-[500px] top-[500px]'></div>
+                <div className='w-[100px] h-[100px] bg-green-400'></div>
+                <div className='w-[100px] h-[100px] bg-orange-400 absolute right-[20px] bottom-[20px]'></div>
+            </div>
+        </div>
+    )
 }
 
 export default App
