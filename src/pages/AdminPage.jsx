@@ -1,5 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import { LuClipboardList, LuBoxes, LuUsers, LuMessageCircle } from "react-icons/lu";
+import AdminProductsPage from './admin/AdminProductsPage';
+import AdminAddProductPage from './admin/AdminAddProductPage';
 
 export default function AdminPage() {
     return (
@@ -10,7 +12,7 @@ export default function AdminPage() {
                     <h1 className="text-2xl">Admin Panel</h1>
                 </div>
 
-                <div className="w-full h-[400px] text-white text-2xl flex flex-col">
+                <div className="w-full h-[400px] text-white text-2xl flex flex-col pl-[20px] pt-[20px]">
                     <Link to="/admin" className="w-full h-[50px] flex items-center gap-[10px]"><LuClipboardList /> Orders</Link>
                     <Link to="/admin/products" className="w-full h-[50px] flex items-center gap-[10px]"><LuBoxes /> Products</Link>
                     <Link to="/admin/users" className="w-full h-[50px] flex items-center gap-[10px]"><LuUsers /> Users</Link>
@@ -20,7 +22,8 @@ export default function AdminPage() {
             <div className="w-[calc(100%-300px)] h-full max-h-full border-[10px] bg-primary rounded-2xl overflow-y-scroll border-accent">
                 <Routes path="/">
                     <Route path="/" element={<h1>Orders </h1>} />
-                    <Route path="/products" element={<h1>Products </h1>} />
+                    <Route path="/products" element={<AdminProductsPage />} />
+                    <Route path="/add-product" element={<AdminAddProductPage />} />
                     <Route path="/users" element={<h1>Users </h1>} />
                     <Route path="/reviews" element={<h1>Reviews </h1>} />
                 </Routes>
