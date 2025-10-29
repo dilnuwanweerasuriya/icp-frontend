@@ -8,7 +8,7 @@ export default function AdminPage() {
         <div className="w-full h-full max-h-full bg-accent flex">
             <div className="w-[300px] bg-accent h-full">
                 <div className="w-full h-[100px] text-primary flex items-center">
-                    <img src="/logo.svg" className="h-full" alt="Logo" />
+                    <img src="/logo.png" className="h-full" alt="Logo" />
                     <h1 className="text-2xl">Admin Panel</h1>
                 </div>
 
@@ -19,13 +19,13 @@ export default function AdminPage() {
                     <Link to="/admin/reviews" className="w-full h-[50px] flex items-center gap-[10px]"><LuMessageCircle /> Reviews</Link>
                 </div>
             </div>
-            <div className="w-[calc(100%-300px)] h-full max-h-full border-[10px] bg-primary rounded-2xl overflow-y-scroll border-accent">
-                <Routes path="/">
-                    <Route path="/" element={<h1>Orders </h1>} />
-                    <Route path="/products" element={<AdminProductsPage />} />
-                    <Route path="/add-product" element={<AdminAddProductPage />} />
-                    <Route path="/users" element={<h1>Users </h1>} />
-                    <Route path="/reviews" element={<h1>Reviews </h1>} />
+            <div className="w-[calc(100%-300px)] h-full max-h-full border-[10px] bg-primary rounded-2xl overflow-y-auto border-accent">
+                <Routes>
+                    <Route index element={<h1>Orders</h1>} />
+                    <Route path="products" element={<AdminProductsPage />} />
+                    <Route path="add-product" element={<AdminAddProductPage />} />
+                    <Route path="users" element={<h1>Users</h1>} />
+                    <Route path="reviews" element={<h1>Reviews</h1>} />
                 </Routes>
             </div>
         </div>

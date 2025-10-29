@@ -32,7 +32,7 @@ export default function LoginPage() {
     <div className='w-full h-screen bg-[url("/bg-login.jpg")] bg-center bg-cover bg-no-repeat flex'>
       <div className="w-[50%] h-full flex flex-col justify-center items-center">
         <img
-          src="/logo.svg"
+          src="/logo.png"
           alt="logo"
           className="w-[200px] h-[200px] mg-[20px] object-cover"
         />
@@ -45,7 +45,7 @@ export default function LoginPage() {
       </div>
       <div className="w-[50%] h-full flex flex-col justify-center items-center">
         <div className="w-[450px] h-[600px] backdrop-blur-lg shadow-2xl rounded-2xl flex flex-col justify-center items-center">
-          <h1 className="text-[40px] font-bold mb-[50px] text-accent text-shadow-white">
+          <h1 className="text-[40px] font-bold mb-[50px] text-primary text-shadow-white">
             Login
           </h1>
           <input

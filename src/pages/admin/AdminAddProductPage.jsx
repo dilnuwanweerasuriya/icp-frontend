@@ -20,18 +20,18 @@ export default function AdminAddProductPage() {
 
     const navigate = useNavigate()
 
-    async function addProduct(){
+    async function addProduct() {
         const token = localStorage.getItem("token")
 
-        if(token == null){
+        if (token == null) {
             toast.error('Please login first');
             navigate('/login')
             return
-        }else{
-            if(productId == '' || name == '' || altName == '' || description == '' || price == 0 || labelledPrice == 0 || images == '' || category == '' || brand == '' || model == '' || stock == 0){
+        } else {
+            if (productId == '' || name == '' || altName == '' || description == '' || price == 0 || labelledPrice == 0 || images == '' || category == '' || brand == '' || model == '' || stock == 0) {
                 toast.error('Please fill all the fields');
                 return
-            }else{
+            } else {
                 try {
                     const altNameArray = altName.split(',')
                     const imagesArray = images.split(',')
@@ -49,7 +49,7 @@ export default function AdminAddProductPage() {
                         model: model,
                         stock: stock,
                         isAvailable: isAvailable
-                    },{
+                    }, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
@@ -65,80 +65,180 @@ export default function AdminAddProductPage() {
         }
     }
 
-  return (
-    <div className='w-full h-full p-[50px] flex justify-center items-start overflow-y-scroll'>
-        <div className='w-[600px] bg-accent/75 rounded-2xl p-[40px]'>
-            <div className='w-full bg-white p-[20px]'>
-                <div className='my-[10px]'>
-                    <label>Product ID</label>
-                    <input type="text" value={productId} onChange={(e) => setProductId(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                    <p className='text-sm text-gray-500 text-right'>Provide a unique product ID</p>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Name</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Alternative Names</label>
-                    <input type="text" value={altName} onChange={(e) => setAltName(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                    <p className='text-sm text-gray-500 text-right'>Use comma to separate alternative names</p>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Description</label>
-                    <textarea value={description} onChange={(e) => setDescription(e.target.value)} className='w-full h-[100px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px] py-[10px]' />
-                </div>
-                <div className='my-[10px]'>
-                    <label>Price</label>
-                    <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Labelled Price</label>
-                    <input type="number" value={labelledPrice} onChange={(e) => setLabelledPrice(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Images</label>
-                    <input type="text" value={images} onChange={(e) => setImages(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Category</label>
-                    <select className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]' value={category} onChange={(e) => setCategory(e.target.value)}>
-                        <option value='CPU'>CPU</option>
-                        <option value='Graphic Cards'>Graphic Cards</option>
-                        <option value='RAM'>RAM</option>
-                        <option value='Storage Devices'>Storage Devices</option>
-                        <option value='Motherboards'>Motherboards</option>
-                        <option value='Power Supplies'>Power Supplies</option>
-                        <option value='Mouse and Keyboards'>Mouse and Keyboards</option>
-                        <option value='Monitors'>Monitors</option>
-                        <option value='Other'>Other</option>
-                    </select>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Brand</label>
-                    <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Model</label>
-                    <input type="text" value={model} onChange={(e) => setModel(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Stock</label>
-                    <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]'/>
-                </div>
-                <div className='my-[10px]'>
-                    <label>Is Available?</label>
-                    <select className='w-full h-[40px] rounded-2xl focus:ring-accent border border-accent shadow-2xl px-[20px]' value={isAvailable} onChange={(e) => setIsAvailable(e.target.value)}>
-                        <option value='true'>Yes</option>
-                        <option value='false'>No</option>
-                    </select>
-                </div>
-                <div>
-                    <button onClick={addProduct} className="w-[200px] h-[50px] bg-accent text-white text-[20px] border-[2px] border-accent hover:bg-transparent hover:text-accent font-bold rounded-2xl">
-                        Submit
-                    </button>
+    return (
+        <div className="w-full h-full min-h-screen flex justify-center items-start p-10 overflow-y-auto">
+            <div className="w-full max-w-4xl bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-10 m-1">
+                <h1 className="text-3xl font-bold text-accent mb-8 text-center">Add New Product</h1>
+
+                <div className="space-y-6">
+                    {/* Product ID */}
+                    <div>
+                        <label className="block font-semibold mb-2 text-gray-700">Product ID</label>
+                        <input
+                            type="text"
+                            value={productId}
+                            onChange={(e) => setProductId(e.target.value)}
+                            className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 focus:border-accent shadow-sm px-4"
+                            placeholder="e.g. PROD-001"
+                        />
+                        <p className="text-xs text-gray-500 mt-1 text-right">Provide a unique product ID</p>
+                    </div>
+
+                    {/* Name */}
+                    <div>
+                        <label className="block font-semibold mb-2 text-gray-700">Name</label>
+                        <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                            placeholder="Product name"
+                        />
+                    </div>
+
+                    {/* Alternative Names */}
+                    <div>
+                        <label className="block font-semibold mb-2 text-gray-700">Alternative Names</label>
+                        <input
+                            type="text"
+                            value={altName}
+                            onChange={(e) => setAltName(e.target.value)}
+                            className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                            placeholder="Comma-separated alternative names"
+                        />
+                        <p className="text-xs text-gray-500 mt-1 text-right">Use commas to separate alternative names</p>
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <label className="block font-semibold mb-2 text-gray-700">Description</label>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="w-full min-h-[100px] rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4 py-2"
+                            placeholder="Write a short description..."
+                        />
+                    </div>
+
+                    {/* Price fields */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block font-semibold mb-2 text-gray-700">Price</label>
+                            <input
+                                type="number"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                                placeholder="0.00"
+                            />
+                        </div>
+                        <div>
+                            <label className="block font-semibold mb-2 text-gray-700">Labelled Price</label>
+                            <input
+                                type="number"
+                                value={labelledPrice}
+                                onChange={(e) => setLabelledPrice(e.target.value)}
+                                className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                                placeholder="0.00"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Images */}
+                    <div>
+                        <label className="block font-semibold mb-2 text-gray-700">Images (URLs)</label>
+                        <input
+                            type="text"
+                            value={images}
+                            onChange={(e) => setImages(e.target.value)}
+                            className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                            placeholder="https://example.com/image.jpg"
+                        />
+                    </div>
+
+                    {/* Category */}
+                    <div>
+                        <label className="block font-semibold mb-2 text-gray-700">Category</label>
+                        <select
+                            className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
+                            <option>CPU</option>
+                            <option>Graphic Cards</option>
+                            <option>RAM</option>
+                            <option>Storage Devices</option>
+                            <option>Motherboards</option>
+                            <option>Power Supplies</option>
+                            <option>Mouse and Keyboards</option>
+                            <option>Monitors</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    {/* Brand & Model */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block font-semibold mb-2 text-gray-700">Brand</label>
+                            <input
+                                type="text"
+                                value={brand}
+                                onChange={(e) => setBrand(e.target.value)}
+                                className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                                placeholder="e.g. Intel, AMD"
+                            />
+                        </div>
+                        <div>
+                            <label className="block font-semibold mb-2 text-gray-700">Model</label>
+                            <input
+                                type="text"
+                                value={model}
+                                onChange={(e) => setModel(e.target.value)}
+                                className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                                placeholder="e.g. i9-13900K"
+                            />
+                        </div>
+                    </div>
+
+                    <div className='grid grid-cols-2 gap-4'>
+                        {/* Stock */}
+                        <div>
+                            <label className="block font-semibold mb-2 text-gray-700">Stock</label>
+                            <input
+                                type="number"
+                                value={stock}
+                                onChange={(e) => setStock(e.target.value)}
+                                className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                                placeholder="Available units"
+                            />
+                        </div>
+
+                        {/* Availability */}
+                        <div>
+                            <label className="block font-semibold mb-2 text-gray-700">Is Available?</label>
+                            <select
+                                className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
+                                value={isAvailable}
+                                onChange={(e) => setIsAvailable(e.target.value)}
+                            >
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-center pt-6">
+                        <button
+                            onClick={addProduct}
+                            className="w-48 h-12 bg-accent text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-accent/80 transition-all duration-200 cursor-pointer"
+                        >
+                            Add Product
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-  )
+
+    )
 }
