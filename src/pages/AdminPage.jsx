@@ -1,32 +1,74 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import { LuClipboardList, LuBoxes, LuUsers, LuMessageCircle } from "react-icons/lu";
 import AdminProductsPage from './admin/AdminProductsPage';
 import AdminAddProductPage from './admin/AdminAddProductPage';
+import AdminEditProductPage from './admin/AdminEditProductPage';
 
 export default function AdminPage() {
+
+    const location = useLocation();
+
+    const isActive = (path) => {
+        if (path === '/admin') return location.pathname === '/admin';
+        return location.pathname.startsWith(path);
+    };
+
+    const navItems = [
+        { path: '/admin', icon: LuClipboardList, label: 'Orders' },
+        { path: '/admin/products', icon: LuBoxes, label: 'Products' },
+        { path: '/admin/users', icon: LuUsers, label: 'Users' },
+        { path: '/admin/reviews', icon: LuMessageCircle, label: 'Reviews' },
+    ];
+
     return (
         <div className="w-full h-full max-h-full bg-accent flex">
-            <div className="w-[300px] bg-accent h-full">
-                <div className="w-full h-[100px] text-primary flex items-center">
-                    <img src="/logo.png" className="h-full" alt="Logo" />
-                    <h1 className="text-2xl">Admin Panel</h1>
+            {/* Sidebar */}
+            <div className="w-[280px] bg-accent h-full border-r border-secondary/20 flex flex-col">
+                {/* Logo Section */}
+                <div className="w-full h-[100px] px-6 flex items-center gap-3 border-b border-secondary/20">
+                    <img src="/logo.png" className="h-14 w-14 object-contain" alt="Logo" />
+                    <h1 className="text-xl font-bold text-primary">Admin Panel</h1>
                 </div>
 
-                <div className="w-full h-[400px] text-white text-2xl flex flex-col pl-[20px] pt-[20px]">
-                    <Link to="/admin" className="w-full h-[50px] flex items-center gap-[10px]"><LuClipboardList /> Orders</Link>
-                    <Link to="/admin/products" className="w-full h-[50px] flex items-center gap-[10px]"><LuBoxes /> Products</Link>
-                    <Link to="/admin/users" className="w-full h-[50px] flex items-center gap-[10px]"><LuUsers /> Users</Link>
-                    <Link to="/admin/reviews" className="w-full h-[50px] flex items-center gap-[10px]"><LuMessageCircle /> Reviews</Link>
-                </div>
+                {/* Navigation */}
+                <nav className="flex-1 px-4 py-6">
+                    <div className="space-y-2">
+                        {navItems.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                                <Link
+                                    key={item.path}
+                                    to={item.path}
+                                    className={`
+                        w-full h-12 flex items-center gap-3 px-4 rounded-lg
+                        text-lg font-medium transition-all duration-200
+                        ${isActive(item.path)
+                                            ? 'bg-gold text-accent shadow-lg shadow-gold/20'
+                                            : 'text-primary/70 hover:text-primary hover:bg-primary/5'
+                                        }
+                    `}
+                                >
+                                    <Icon className="text-xl" />
+                                    <span>{item.label}</span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </nav>
             </div>
-            <div className="w-[calc(100%-300px)] h-full max-h-full border-[10px] bg-primary rounded-2xl overflow-y-auto border-accent">
-                <Routes>
-                    <Route index element={<h1>Orders</h1>} />
-                    <Route path="products" element={<AdminProductsPage />} />
-                    <Route path="add-product" element={<AdminAddProductPage />} />
-                    <Route path="users" element={<h1>Users</h1>} />
-                    <Route path="reviews" element={<h1>Reviews</h1>} />
-                </Routes>
+
+            {/* Main Content */}
+            <div className="flex-1 h-full max-h-full p-6 overflow-hidden">
+                <div className="w-full h-full bg-primary rounded-2xl shadow-2xl overflow-y-auto">
+                    <Routes>
+                        <Route index element={<h1>Orders</h1>} />
+                        <Route path="products" element={<AdminProductsPage />} />
+                        <Route path="add-product" element={<AdminAddProductPage />} />
+                        <Route path="edit-product" element={<AdminEditProductPage />} />
+                        <Route path="users" element={<h1>Users</h1>} />
+                        <Route path="reviews" element={<h1>Reviews</h1>} />
+                    </Routes>
+                </div>
             </div>
         </div>
     )

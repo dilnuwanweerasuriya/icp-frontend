@@ -1,27 +1,33 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
 import uploadFile from '../../utils/MediaUpload'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-export default function AdminAddProductPage() {
+export default function AdminEditProductPage() {
+    const location = useLocation();
+    const product = location.state;
 
-    const [productId, setProductId] = useState('')
-    const [name, setName] = useState('')
-    const [altNames, setAltNames] = useState('')
-    const [description, setDescription] = useState('')
-    const [price, setPrice] = useState(0)
-    const [labelledPrice, setLabelledPrice] = useState(0)
+    const [productId, setProductId] = useState(product?.productId || '')
+    const [name, setName] = useState(product?.name || '')
+    const [altNames, setAltNames] = useState(product?.altNames?.join(",") || '')
+    const [description, setDescription] = useState(product?.description || '')
+    const [price, setPrice] = useState(product?.price || 0)
+    const [labelledPrice, setLabelledPrice] = useState(product?.labelledPrice || 0)
     const [files, setFiles] = useState([])
-    const [category, setCategory] = useState('')
-    const [brand, setBrand] = useState('')
-    const [model, setModel] = useState('')
-    const [stock, setStock] = useState(0)
-    const [isAvailable, setIsAvailable] = useState(false)
+    const [category, setCategory] = useState(product?.category || '')
+    const [brand, setBrand] = useState(product?.brand || '')
+    const [model, setModel] = useState(product?.model || '')
+    const [stock, setStock] = useState(product?.stock || 0)
+    const [isAvailable, setIsAvailable] = useState(product?.isAvailable || false)
 
     const navigate = useNavigate()
 
-    async function addProduct() {
+    useEffect(() => {
+        if (!location.state) navigate("/admin/products");
+    }, [location.state, navigate]);
+
+    async function updateProduct() {
         const token = localStorage.getItem("token")
 
         if (!token) {
@@ -30,60 +36,77 @@ export default function AdminAddProductPage() {
             return;
         }
 
-		const imagePromises = []
-
-		for(let i=0; i<files.length; i++){
-
-			const promise = uploadFile(files[i])
-			imagePromises.push(promise);
-		}
-
-		const images = await Promise.all(imagePromises).catch((err)=>{
-			toast.error("Error uploading images. Please try again.");
-			console.log("Error uploading images:");
-			console.log(err);
-			return;
-		});
-
-        if(productId=="" ||name=="" || description=="" || category=="" || brand=="" || model==""){
+        // Validate required fields first
+        if (productId === "" || name === "" || description === "" || category === "" || brand === "" || model === "") {
             toast.error("Please fill in all required fields.");
             return;
         }
 
-        try{
-            const altNamesInArray = altNames.split(",")
-            await axios.post(import.meta.env.VITE_BACKEND_URL + "/products/", {
-                productId : productId,
-                name : name,
-                altNames : altNamesInArray,
-                description : description,
-                price : price,
-                labelledPrice : labelledPrice,
-                images : images,
-                category : category,
-                brand : brand,
-                model : model,
-                stock : stock,
-                isAvailable : isAvailable,
+        let images = [];
+        
+        // Upload new images if any files are selected
+        if (files && files.length > 0) {
+            const imagePromises = []
+            for (let i = 0; i < files.length; i++) {
+                const promise = uploadFile(files[i])
+                imagePromises.push(promise);
+            }
+
+            try {
+                const uploadedImages = await Promise.all(imagePromises);
+                images = uploadedImages;
+            } catch (err) {
+                toast.error("Error uploading images. Please try again.");
+                console.log("Error uploading images:", err);
+                // Don't return here - allow update with existing images
+            }
+        }
+
+        // Combine new images with existing ones, or use only existing if no new uploads
+        if (images && images.length > 0) {
+            images = images.concat(product.images || []);
+        } else {
+            images = product.images || [];
+        }
+
+        try {
+            const altNamesInArray = altNames.split(",").map(n => n.trim()).filter(n => n.length > 0)
+
+            await axios.put(import.meta.env.VITE_BACKEND_URL + "/products/" + productId, {
+                name: name,
+                altNames: altNamesInArray,
+                description: description,
+                price: parseFloat(price) || 0,
+                labelledPrice: parseFloat(labelledPrice) || 0,
+                images: images,
+                category: category,
+                brand: brand,
+                model: model,
+                stock: parseInt(stock) || 0,
+                isAvailable: isAvailable,
             }, {
-                headers :{
-                    Authorization : "Bearer "+token
+                headers: {
+                    Authorization: "Bearer " + token
                 }
             })
-            toast.success("Product added successfully!");
+            toast.success("Product updated successfully!");
             navigate("/admin/products");
 
-        }catch(err){
-            toast.error("Error adding product. Please try again.");
-            console.log("Error adding product:");
-            console.log(err);
+        } catch (err) {
+            toast.error("Error updating product. Please try again.");
+            console.log("Error updating product:", err);
         }
+    }
+
+    // Add null check for product
+    if (!product) {
+        return <div>Loading...</div>;
     }
 
     return (
         <div className="w-full h-full min-h-screen flex justify-center items-start p-10 overflow-y-auto">
             <div className="w-full max-w-4xl bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-10 m-1">
-                <h1 className="text-3xl font-bold text-accent mb-8 text-center">Add New Product</h1>
+                <h1 className="text-3xl font-bold text-accent mb-8 text-center">Update Product - {product.name}</h1>
 
                 <div className="space-y-6">
                     {/* Product ID */}
@@ -92,11 +115,11 @@ export default function AdminAddProductPage() {
                         <input
                             type="text"
                             value={productId}
+                            disabled
                             onChange={(e) => setProductId(e.target.value)}
                             className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 focus:border-accent shadow-sm px-4"
                             placeholder="e.g. PROD-001"
                         />
-                        <p className="text-xs text-gray-500 mt-1 text-right">Provide a unique product ID</p>
                     </div>
 
                     {/* Name */}
@@ -145,6 +168,7 @@ export default function AdminAddProductPage() {
                                 onChange={(e) => setPrice(e.target.value)}
                                 className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
                                 placeholder="0.00"
+                                step="0.01"
                             />
                         </div>
                         <div>
@@ -155,20 +179,22 @@ export default function AdminAddProductPage() {
                                 onChange={(e) => setLabelledPrice(e.target.value)}
                                 className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
                                 placeholder="0.00"
+                                step="0.01"
                             />
                         </div>
                     </div>
 
                     {/* Images */}
                     <div>
-                        <label className="block font-semibold mb-2 text-gray-700">Images (URLs)</label>
+                        <label className="block font-semibold mb-2 text-gray-700">Add New Images</label>
                         <input
                             type="file"
                             multiple={true}
                             onChange={(e) => setFiles(e.target.files)}
                             className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
-                            placeholder="https://example.com/image.jpg"
+                            accept="image/*"
                         />
+                        <p className="text-xs text-gray-500 mt-1">Upload new images to add to existing ones</p>
                     </div>
 
                     {/* Category */}
@@ -179,15 +205,16 @@ export default function AdminAddProductPage() {
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
                         >
-                            <option>CPU</option>
-                            <option>Graphic Cards</option>
-                            <option>RAM</option>
-                            <option>Storage Devices</option>
-                            <option>Motherboards</option>
-                            <option>Power Supplies</option>
-                            <option>Mouse and Keyboards</option>
-                            <option>Monitors</option>
-                            <option>Other</option>
+                            <option value="">Select a category</option>
+                            <option value="CPU">CPU</option>
+                            <option value="Graphic Cards">Graphic Cards</option>
+                            <option value="RAM">RAM</option>
+                            <option value="Storage Devices">Storage Devices</option>
+                            <option value="Motherboards">Motherboards</option>
+                            <option value="Power Supplies">Power Supplies</option>
+                            <option value="Mouse and Keyboards">Mouse and Keyboards</option>
+                            <option value="Monitors">Monitors</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
 
@@ -225,6 +252,7 @@ export default function AdminAddProductPage() {
                                 onChange={(e) => setStock(e.target.value)}
                                 className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
                                 placeholder="Available units"
+                                min="0"
                             />
                         </div>
 
@@ -233,8 +261,8 @@ export default function AdminAddProductPage() {
                             <label className="block font-semibold mb-2 text-gray-700">Is Available?</label>
                             <select
                                 className="w-full h-11 rounded-xl focus:ring-2 focus:ring-accent border border-gray-300 shadow-sm px-4"
-                                value={isAvailable}
-                                onChange={(e) => setIsAvailable(e.target.value)}
+                                value={isAvailable ? "true" : "false"}
+                                onChange={(e) => setIsAvailable(e.target.value === "true")}
                             >
                                 <option value="true">Yes</option>
                                 <option value="false">No</option>
@@ -243,17 +271,17 @@ export default function AdminAddProductPage() {
                     </div>
 
                     {/* Submit Button */}
-                    <div className="flex justify-center pt-6">
+                    <div className="flex justify-center gap-6 pt-6">
+                        <button onClick={() => navigate('/admin/products')} className="w-48 h-12 bg-gray-400 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-gray-500 transition-all duration-200 cursor-pointer">Cancel</button>
                         <button
-                            onClick={addProduct}
+                            onClick={updateProduct}
                             className="w-48 h-12 bg-accent text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-accent/80 transition-all duration-200 cursor-pointer"
                         >
-                            Add Product
+                            Update Product
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-
     )
 }

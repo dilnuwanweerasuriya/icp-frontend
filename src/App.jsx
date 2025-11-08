@@ -5,6 +5,10 @@ import LoginPage from './pages/LoginPage'
 import Register from './pages/Register'
 import HomePage from './pages/HomePage'
 import { Toaster } from 'react-hot-toast'
+import Input from './components/Input'
+import ProductPage from './pages/ProductPage'
+import ProductOverviewPage from './pages/ProductOverviewPage'
+import CartPage from './pages/CartPage'
 
 function App() {
 
@@ -14,6 +18,7 @@ function App() {
             <div className='w-full h-screen'>
                 <Routes path="/">
                     <Route path='/*' element={<HomePage />} />
+                    <Route path='/test' element={<Input />} />
                     <Route path='/login' element={<LoginPage />} />
                     <Route path='/register' element={<Register />} />
                     <Route path='/admin/*' element={<AdminPage />} />

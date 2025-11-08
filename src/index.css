@@ -1,24 +1,44 @@
 @import "tailwindcss";
 
 @theme{
-    --color-primary: #EEEEEE;
-    --color-secondary: #6C757D;
-    --color-accent: #44444E;
-    --color-gold: #e29816;
+    --color-primary: #F0F9FF;      /* Text/Cards - Sky white */
+    --color-secondary: #64748B;     /* Muted text - Slate */
+    --color-accent: #020617;        /* Main background - Deep navy */
+    --color-accent-light: #0F172A;  /* Sidebar - Navy */
+    --color-gold: #06B6D4;          /* Accent - Cyan */
+    --color-success: #14B8A6;       /* Success - Teal */
+    --color-warning: #F97316;       /* Warning - Orange */
+    --color-danger: #DC2626;        /* Danger */
 }
 
-/* Styling the entire scrollbar */
+/* Custom scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px; /* Adjust as needed */
+  width: 10px;
+  height: 10px;
 }
 
-/* Styling the scrollbar track (background) */
 ::-webkit-scrollbar-track {
-  background-color: transparent; /* Tailwind's gray-100 equivalent */
+  background-color: transparent;
 }
 
-/* Styling the scrollbar thumb (draggable part) */
 ::-webkit-scrollbar-thumb {
-  background-color: #888; /* Tailwind's gray-500 equivalent */
-  border-radius: 4px; /* Optional: for rounded thumb */
+  background-color: #64748B;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #06B6D4;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #64748B transparent;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }

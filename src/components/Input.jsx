@@ -1,15 +1,19 @@
 import React, { useState } from 'react'
+import uploadFile from '../utils/MediaUpload.js'
 
 function Input() {
 
-    const [text, setText] = useState('')
+    const [file, setFile] = useState(null)
+    
+    async function handleUpload(){
+        const link = await uploadFile(file)
+        console.log(link);
+    }
 
     return (
         <div className='w-full h-full flex justify-center items-center'>
-            <div className='w-[400px] h-[300px] shadow-2xl'>
-                <input type="text" className='w-[100px] h-[50px] border' onChange={(e) => setText(e.target.value)} />
-                <h1 className='w-[100px] h-[50px] text-[30px]'>{text}</h1>
-            </div>
+            <input type="file" onChange={(e) => setFile(e.target.files[0])} accept={"image/*"} className='bg-gray-500' />
+            <button className='bg-gray-500' onClick={handleUpload}>Upload</button>
         </div>
     )
 }
