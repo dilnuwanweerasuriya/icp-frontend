@@ -3,6 +3,7 @@ import { LuClipboardList, LuBoxes, LuUsers, LuMessageCircle } from "react-icons/
 import AdminProductsPage from './admin/AdminProductsPage';
 import AdminAddProductPage from './admin/AdminAddProductPage';
 import AdminEditProductPage from './admin/AdminEditProductPage';
+import AdminOrdersPage from './admin/AdminOrdersPage';
 
 export default function AdminPage() {
 
@@ -61,7 +62,7 @@ export default function AdminPage() {
             <div className="flex-1 h-full max-h-full p-6 overflow-hidden">
                 <div className="w-full h-full bg-primary rounded-2xl shadow-2xl overflow-y-auto">
                     <Routes>
-                        <Route index element={<h1>Orders</h1>} />
+                        <Route index element={<AdminOrdersPage />} />
                         <Route path="products" element={<AdminProductsPage />} />
                         <Route path="add-product" element={<AdminAddProductPage />} />
                         <Route path="edit-product" element={<AdminEditProductPage />} />

@@ -1,31 +1,100 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getCart, getCartTotal } from '../utils/Cart'
+import { emptyCart, getCart, getCartTotal } from '../utils/Cart'
 import { BsArrowLeft, BsTruck } from 'react-icons/bs'
 import { BiShield, BiCreditCard, BiChevronRight } from 'react-icons/bi'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 export default function CheckoutPage() {
     const navigate = useNavigate()
+    const token = localStorage.getItem('token')
     const [cart, setCart] = useState(getCart())
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         phone: '',
         address: '',
         city: '',
-        postalCode: '',
         paymentMethod: 'card',
     })
 
     const handleChange = (e) => {
         const { name, value } = e.target
         setFormData({ ...formData, [name]: value })
+        // Clear error when user starts typing
+        if (error) setError('')
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        // Save order or navigate to confirmation
-        navigate('/order-confirmation', { state: { cart, formData } })
+
+        if (token === null) {
+            navigate('/login')
+            return
+        }
+        
+        // Validate cart is not empty
+        if (cart.length === 0) {
+            setError('Your cart is empty')
+            return
+        }
+
+        setLoading(true)
+        setError('')
+
+        try {
+            // Prepare order data with cart items and totals
+            const orderData = {
+                ...formData,
+                items: cart
+            }
+
+            // Send request and wait for response
+            const response = await axios.post(
+                `${import.meta.env.VITE_BACKEND_URL}/orders`, 
+                orderData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+
+            // Only navigate on successful response
+            if (response.status === 200 || response.status === 201) {
+                // Clear cart after successful order (optional - implement clearCart function)
+                setCart(emptyCart())
+                
+                // Navigate with order details
+                navigate('/order-success', { 
+                    state: { 
+                        cart,
+                        order: response.data.order, 
+                    } 
+                })
+            }
+
+        } catch (err) {
+            toast.error('Order submission error:', err)
+            
+            // Set user-friendly error messages
+            if (err.response) {
+                // Server responded with error
+                setError(err.response.data.message || 'Failed to place order. Please try again.')
+            } else if (err.request) {
+                // Request was made but no response
+                setError('Network error. Please check your connection and try again.')
+            } else {
+                // Something else happened
+                setError('An unexpected error occurred. Please try again.')
+            }
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -42,6 +111,15 @@ export default function CheckoutPage() {
                     </button>
                 </div>
             </div>
+
+            {/* Error Alert */}
+            {error && (
+                <div className="max-w-7xl mx-auto px-4 mt-4">
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        {error}
+                    </div>
+                </div>
+            )}
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -60,7 +138,8 @@ export default function CheckoutPage() {
                                         value={formData.fullName}
                                         onChange={handleChange}
                                         required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        disabled={loading}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-gray-100"
                                     />
                                 </div>
                                 <div>
@@ -71,7 +150,8 @@ export default function CheckoutPage() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        disabled={loading}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-gray-100"
                                     />
                                 </div>
                                 <div>
@@ -82,7 +162,8 @@ export default function CheckoutPage() {
                                         value={formData.phone}
                                         onChange={handleChange}
                                         required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        disabled={loading}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-gray-100"
                                     />
                                 </div>
                                 <div>
@@ -93,7 +174,8 @@ export default function CheckoutPage() {
                                         value={formData.city}
                                         onChange={handleChange}
                                         required
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        disabled={loading}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-gray-100"
                                     />
                                 </div>
                             </div>
@@ -105,10 +187,11 @@ export default function CheckoutPage() {
                                     value={formData.address}
                                     onChange={handleChange}
                                     required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    disabled={loading}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-gray-100"
                                 />
                             </div>
-                            <div>
+                            {/* <div>
                                 <label className="text-sm text-gray-600 font-medium block mb-1">Postal Code</label>
                                 <input
                                     type="text"
@@ -116,9 +199,29 @@ export default function CheckoutPage() {
                                     value={formData.postalCode}
                                     onChange={handleChange}
                                     required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    disabled={loading}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-gray-100"
                                 />
-                            </div>
+                            </div> */}
+                            
+                            {/* Submit button moved to form for proper form submission */}
+                            <button
+                                type="submit"
+                                disabled={loading || cart.length === 0}
+                                className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed lg:hidden"
+                            >
+                                {loading ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    <>
+                                        Place Order
+                                        <BiChevronRight size={20} />
+                                    </>
+                                )}
+                            </button>
                         </form>
                     </div>
 
@@ -133,6 +236,7 @@ export default function CheckoutPage() {
                                     value="card"
                                     checked={formData.paymentMethod === 'card'}
                                     onChange={handleChange}
+                                    disabled={loading}
                                     className="accent-blue-600"
                                 />
                                 <BiCreditCard size={20} className="text-blue-600" />
@@ -146,6 +250,7 @@ export default function CheckoutPage() {
                                     value="cod"
                                     checked={formData.paymentMethod === 'cod'}
                                     onChange={handleChange}
+                                    disabled={loading}
                                     className="accent-blue-600"
                                 />
                                 <BsTruck size={20} className="text-green-600" />
@@ -158,6 +263,21 @@ export default function CheckoutPage() {
                 {/* Right: Order Summary */}
                 <div className="bg-white rounded-xl p-6 shadow-sm h-fit sticky top-24">
                     <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+
+                    {/* Cart Items Preview */}
+                    {cart.length > 0 && (
+                        <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
+                            {cart.slice(0, 3).map((item, index) => (
+                                <div key={index} className="flex justify-between text-sm text-gray-600">
+                                    <span className="truncate flex-1">{item.name} x{item.quantity}</span>
+                                    <span>LKR {(item.price * item.quantity).toLocaleString()}</span>
+                                </div>
+                            ))}
+                            {cart.length > 3 && (
+                                <p className="text-xs text-gray-500">+{cart.length - 3} more items</p>
+                            )}
+                        </div>
+                    )}
 
                     <div className="space-y-3 mb-6">
                         <div className="flex justify-between text-gray-600">
@@ -180,10 +300,20 @@ export default function CheckoutPage() {
 
                     <button
                         onClick={handleSubmit}
-                        className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                        disabled={loading || cart.length === 0}
+                        className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                        Place Order
-                        <BiChevronRight size={20} />
+                        {loading ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                Processing...
+                            </>
+                        ) : (
+                            <>
+                                Place Order
+                                <BiChevronRight size={20} />
+                            </>
+                        )}
                     </button>
 
                     {/* Trust Badges */}

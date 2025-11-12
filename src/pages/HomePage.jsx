@@ -5,6 +5,7 @@ import ProductPage from './ProductPage'
 import CartPage from './CartPage'
 import ProductOverviewPage from './ProductOverviewPage'
 import CheckoutPage from './CheckoutPage'
+import OrderConfirmationPage from './OrderConfirmationPage'
 
 export default function HomePage() {
   return (
@@ -19,6 +20,7 @@ export default function HomePage() {
             <Route path='/cart' element={<CartPage />} />
             <Route path='/checkout' element={<CheckoutPage />} />
             <Route path='/products/:productId' element={<ProductOverviewPage />} />
+            <Route path='/order-success' element={<OrderConfirmationPage />} />
             <Route path='/*' element={<h1>Not Found Page</h1>} />
           </Routes>
         </div>
