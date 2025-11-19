@@ -1,9 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { FaPlus } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
 import Loader from '../../components/Loader'
-import { BsEye } from 'react-icons/bs'
+import ViewOrderInfo from '../../components/ViewOrderInfo'
 
 function AdminOrdersPage() {
     const [orders, setOrders] = useState([])
@@ -53,9 +51,7 @@ function AdminOrdersPage() {
                                             <td className='p-2'>{order.status}</td>
                                             <td className='p-2'>LKR {order.total.toFixed(2)}</td>
                                             <td className="p-4 text-center">
-                                                <div className="flex items-center justify-center gap-3">
-                                                    <Link to={'/admin/view-order'} state={order}><BsEye className="text-gray-600 hover:text-accent cursor-pointer text-lg transition" /></Link>
-                                                </div>
+                                                <ViewOrderInfo order={order} />
                                             </td>
                                         </tr>
                                     )
