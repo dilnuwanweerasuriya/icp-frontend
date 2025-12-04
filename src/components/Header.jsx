@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { FaShoppingCart } from 'react-icons/fa'
+import { FaShoppingCart, FaUser } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import UserData from './UserData'
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -23,6 +24,9 @@ export default function Header() {
 
             {/* Desktop Cart */}
             <div className="hidden md:flex items-center text-lg lg:text-xl text-primary gap-[20px] lg:gap-[30px]">
+                <div>
+                    <UserData />
+                </div>
                 <Link to="/cart" className="hover:opacity-80 transition-opacity">
                     <FaShoppingCart />
                 </Link>

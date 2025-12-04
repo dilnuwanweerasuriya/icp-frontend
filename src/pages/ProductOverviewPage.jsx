@@ -148,6 +148,10 @@ export default function ProductOverviewPage() {
                                         </div>
                                     </div>
 
+                                    <div className='flex items-center gap-2'>
+                                        <span className='text-gray-600'>{product.altNames.join(' | ')}</span>
+                                    </div>
+
                                     <div className='flex flex-col gap-2'>
                                         <h2 className='text-2xl font-semibold mb-2'>
                                             Description
