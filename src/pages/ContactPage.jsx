@@ -80,22 +80,22 @@ const ContactPage = () => {
                 <div className="space-y-6 text-lg text-gray-700">
                   <p className="flex items-center">
                     <FaMapMarkedAlt className="text-blue-500 text-2xl mr-4" />
-                    <span>123 Tech Lane, Silicon Valley, CA 90210</span>
+                    <span>123 Galle Road, Moratuwa</span>
                   </p>
                   <p className="flex items-center">
                     <Phone className="text-blue-500 text-2xl mr-4" />
-                    <span>+1 (555) 123-4567</span>
+                    <span>+94 77 111 2222</span>
                   </p>
                   <p className="flex items-center">
                     <BiEnvelope className="text-blue-500 text-2xl mr-4" />
-                    <span>support@bytebazaar.com</span>
+                    <span>support@icpcomputers.com</span>
                   </p>
                 </div>
               </div>
               <div className="mt-8">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">Business Hours:</h3>
-                <p className="text-gray-700">Monday - Friday: 9:00 AM - 6:00 PM (PST)</p>
-                <p className="text-gray-700">Saturday: 10:00 AM - 4:00 PM (PST)</p>
+                <p className="text-gray-700">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                <p className="text-gray-700">Saturday: 10:00 AM - 4:00 PM</p>
                 <p className="text-gray-700">Sunday: Closed</p>
               </div>
             </div>
@@ -194,7 +194,7 @@ const ContactPage = () => {
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="ByteBazaar Location"
+              title="ICP Location"
             ></iframe>
           </div>
         </section>
