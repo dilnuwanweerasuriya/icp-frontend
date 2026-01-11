@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FaShoppingCart, FaUser } from 'react-icons/fa'
+import { FaShoppingCart } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import UserData from './UserData'
 
@@ -10,74 +10,70 @@ export default function Header() {
     const closeMenu = () => setIsMenuOpen(false)
 
     return (
-        <div className="w-full h-[80px] md:h-[100px] bg-accent flex justify-between items-center px-4 md:px-6 relative">
-            {/* Logo */}
-            <img src="/logo.png" className="h-[60px] md:h-full py-2" alt="logo" />
+        <header className="w-full h-[80px] md:h-[100px] bg-accent flex justify-between items-center px-4 md:px-10 relative z-[100] shadow-sm">
+            <Link to="/" onClick={closeMenu}>
+                <img src="/logo.png" className="h-[50px] md:h-[70px] object-contain" alt="logo" />
+            </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex flex-1 justify-center items-center text-lg lg:text-xl text-primary gap-[20px] lg:gap-[30px]">
-                <Link to="/" className="hover:opacity-80 transition-opacity">Home</Link>
-                <Link to="/products" className="hover:opacity-80 transition-opacity">Products</Link>
-                <Link to="/about" className="hover:opacity-80 transition-opacity">About</Link>
-                <Link to="/contact" className="hover:opacity-80 transition-opacity">Contact</Link>
-            </div>
+            <nav className="hidden md:flex flex-1 justify-center items-center text-lg lg:text-xl text-primary gap-[20px] lg:gap-[40px] font-medium">
+                <Link to="/" className="hover:text-white transition-colors">Home</Link>
+                <Link to="/products" className="hover:text-white transition-colors">Products</Link>
+                <Link to="/about" className="hover:text-white transition-colors">About</Link>
+                <Link to="/contact" className="hover:text-white transition-colors">Contact</Link>
+            </nav>
 
-            {/* Desktop Cart */}
             <div className="hidden md:flex items-center text-lg lg:text-xl text-primary gap-[20px] lg:gap-[30px]">
-                <div>
-                    <UserData />
-                </div>
-                <Link to="/cart" className="hover:opacity-80 transition-opacity">
-                    <FaShoppingCart />
+                <UserData />
+                <Link to="/cart" className="relative hover:text-white transition-colors">
+                    <FaShoppingCart size={24} />
                 </Link>
             </div>
 
-            {/* Hamburger Menu */}
             <button
                 onClick={toggleMenu}
-                className="md:hidden ml-auto flex flex-col justify-center items-center gap-1.5 p-2"
+                className="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 z-[10001]"
                 aria-label="Toggle menu"
-                aria-expanded={isMenuOpen}
             >
                 <span
-                    className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''
-                        }`}
+                    className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${
+                        isMenuOpen ? 'rotate-45 translate-y-2' : ''
+                    }`}
                 ></span>
                 <span
-                    className={`block w-6 h-0.5 bg-primary transition-opacity duration-300 ${isMenuOpen ? 'opacity-0' : ''
-                        }`}
+                    className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${
+                        isMenuOpen ? 'opacity-0' : 'opacity-100'
+                    }`}
                 ></span>
                 <span
-                    className={`block w-6 h-0.5 bg-primary transition-transform duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''
-                        }`}
+                    className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${
+                        isMenuOpen ? '-rotate-45 -translate-y-2' : ''
+                    }`}
                 ></span>
             </button>
 
-            {/* Mobile Menu */}
             <div
-                className={`absolute z-[9999] top-[80px] left-0 w-full bg-accent md:hidden transition-all duration-300 ease-in-out ${isMenuOpen
-                        ? 'max-h-screen opacity-100'
-                        : 'max-h-0 opacity-0 overflow-hidden'
-                    }`}
+                className={`fixed inset-0 bg-accent z-[10000] md:hidden transition-all duration-500 ease-in-out ${
+                    isMenuOpen 
+                        ? 'translate-x-0 opacity-100' 
+                        : 'translate-x-full opacity-0 pointer-events-none'
+                }`}
             >
-                <div className="flex flex-col text-lg text-primary py-4">
-                    <Link to="/" onClick={closeMenu} className="px-6 py-3 hover:bg-primary/10 transition-colors">
-                        Home
-                    </Link>
-                    <Link to="/products" onClick={closeMenu} className="px-6 py-3 hover:bg-primary/10 transition-colors">
-                        Products
-                    </Link>
-                    <Link to="/about" onClick={closeMenu} className="px-6 py-3 hover:bg-primary/10 transition-colors">
-                        About
-                    </Link>
-                    <Link to="/contact" onClick={closeMenu} className="px-6 py-3 hover:bg-primary/10 transition-colors">
-                        Contact
-                    </Link>
-                    <Link to="/cart" onClick={closeMenu} className="px-6 py-3 hover:bg-primary/10 transition-colors">
-                        <FaShoppingCart />
-                    </Link>
+                <div className="flex flex-col items-center justify-center h-full space-y-8 text-2xl text-primary font-semibold">
+                    <Link to="/" onClick={closeMenu} className="hover:text-white">Home</Link>
+                    <Link to="/products" onClick={closeMenu} className="hover:text-white">Products</Link>
+                    <Link to="/about" onClick={closeMenu} className="hover:text-white">About</Link>
+                    <Link to="/contact" onClick={closeMenu} className="hover:text-white">Contact</Link>
+                    
+                    <hr className="w-1/2 border-primary/20" />
+                    
+                    <div className="flex items-center gap-8">
+                        <UserData />
+                        <Link to="/cart" onClick={closeMenu} className="relative">
+                            <FaShoppingCart size={30} />
+                        </Link>
+                    </div>
                 </div>
             </div>
-        </div>
+        </header>
     )
 }

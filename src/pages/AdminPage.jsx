@@ -1,5 +1,5 @@
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
-import { LuClipboardList, LuBoxes, LuUsers, LuMessageCircle } from "react-icons/lu";
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
+import { LuClipboardList, LuBoxes, LuUsers, LuMessageCircle, LuLogOut } from "react-icons/lu";
 import AdminProductsPage from './admin/AdminProductsPage';
 import AdminAddProductPage from './admin/AdminAddProductPage';
 import AdminEditProductPage from './admin/AdminEditProductPage';
@@ -8,10 +8,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Loader from '../components/Loader';
 import UserData from '../components/UserData';
+import AdminUsersPage from './admin/AdminUsersPage';
 
 export default function AdminPage() {
 
     const location = useLocation();
+    const navigate = useNavigate();
 
     const [user, setUser] = useState(null);
 
@@ -35,7 +37,12 @@ export default function AdminPage() {
             console.log(err);
             window.location.href = '/login'
         })
-    })
+    }, [])
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
 
     const isActive = (path) => {
         if (path === '/admin') return location.pathname === '/admin';
@@ -87,6 +94,19 @@ export default function AdminPage() {
                                     })}
                                 </div>
                             </nav>
+
+                            {/* Logout Section */}
+                            <div className="px-4 py-6 border-t border-secondary/20">
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-full h-12 flex items-center gap-3 px-4 rounded-lg
+                                        text-lg font-medium transition-all duration-200
+                                        text-red-500 hover:bg-red-500/10 hover:text-red-600"
+                                >
+                                    <LuLogOut className="text-xl" />
+                                    <span>Logout</span>
+                                </button>
+                            </div>
                         </div>
 
                         {/* Main Content */}
@@ -97,7 +117,7 @@ export default function AdminPage() {
                                     <Route path="products" element={<AdminProductsPage />} />
                                     <Route path="add-product" element={<AdminAddProductPage />} />
                                     <Route path="edit-product" element={<AdminEditProductPage />} />
-                                    <Route path="users" element={<h1>Users</h1>} />
+                                    <Route path="users" element={<AdminUsersPage />} />
                                     <Route path="reviews" element={<h1>Reviews</h1>} />
                                 </Routes>
                             </div>
