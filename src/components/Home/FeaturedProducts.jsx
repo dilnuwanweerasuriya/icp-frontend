@@ -13,7 +13,7 @@ const FeaturedProducts = () => {
             });
     }, []);
 
-    const featuredProducts = products.slice(0, 4);
+    const featuredProducts = products.slice(0, 8);
 
     return (
         <section className="container mx-auto py-12 px-4">
